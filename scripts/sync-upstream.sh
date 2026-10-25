@@ -21,6 +21,12 @@ done
 
 log() { printf '%s\n' "$*" >&2; }
 
+sync_repo="${GITHUB_REPOSITORY:-}"
+if [[ -z "$sync_repo" ]]; then
+  sync_repo=$(git remote get-url origin | sed -E 's#^[a-z+]+://##; s#^git@##; s#^[^/]+[/:]##; s#\.git$##')
+fi
+export GH_REPO="$sync_repo"
+
 set_output() {
   if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
     printf '%s=%s\n' "$1" "$2" >> "$GITHUB_OUTPUT"
